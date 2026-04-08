@@ -4,8 +4,8 @@ on:
   schedule:
     # 早上 8 点 (UTC 时间 0 点)
     - cron: '0 0 * * *'
-    # 晚上 23 点 30 分 (UTC 时间 15 点 30 分)
-    - cron: '30 15 * * *'
+    # 晚上 24 点 (UTC 时间 16 点)
+    - cron: '00 16 * * *'
   workflow_dispatch:
 
 permissions:
