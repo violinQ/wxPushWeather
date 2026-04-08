@@ -37,7 +37,6 @@ jobs:
         python main.py
 
     env:
-      APP_KEY: ${{ secrets.APP_KEY }}
       APP_ID: ${{ secrets.APP_ID }}
       APP_SECRET: ${{ secrets.APP_SECRET }}
       TEMPLATE_ID_DAY: ${{ secrets.TEMPLATE_ID_DAY }}
@@ -47,3 +46,7 @@ jobs:
       NAME: ${{ secrets.NAME }}
       BIRTHDAY: ${{ secrets.BIRTHDAY }}
       CITY: ${{ secrets.CITY }}
+      QWEATHER_HOST: ${{ secrets.QWEATHER_HOST }}
+      QWEATHER_KID: ${{ secrets.QWEATHER_KID }}
+      QWEATHER_PRIVATE_KEY: ${{ secrets.QWEATHER_PRIVATE_KEY }}
+      QWEATHER_PROJECT_ID: ${{ secrets.QWEATHER_PROJECT_ID }}
