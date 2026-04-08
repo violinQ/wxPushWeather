@@ -17,7 +17,6 @@ app_secret = os.environ["APP_SECRET"]
 user_ids = os.environ["USER_IDS"]
 template_id_day = os.environ["TEMPLATE_ID_DAY"]
 template_id_night = os.environ["TEMPLATE_ID_NIGHT"]
-name = os.environ['NAME']
 city = os.environ['CITY']
 
 # ====== 和风天气 JWT ======
@@ -95,7 +94,8 @@ params["location"] = city_id
 # ================== 实时天气 ==================
 realtime_json = qweather_get("/v7/weather/now", params)
 realtime = realtime_json["now"]
-now_temperature = realtime["temp"] + "℃" + realtime["text"]
+# now_temperature = realtime["temp"] + "摄氏度" + realtime["text"]
+now_temperature = realtime["temp"] + "摄氏度"
 
 # ================== 3天天气 ==================
 day_forecast_json = qweather_get("/v7/weather/3d", params)
@@ -103,8 +103,8 @@ day_forecast_json = qweather_get("/v7/weather/3d", params)
 # 今日
 today_data = day_forecast_json["daily"][0]
 day_forecast_today_weather = today_data["textDay"]
-day_forecast_today_temperature_min = today_data["tempMin"] + "℃"
-day_forecast_today_temperature_max = today_data["tempMax"] + "℃"
+day_forecast_today_temperature_min = today_data["tempMin"] + "摄氏度"
+day_forecast_today_temperature_max = today_data["tempMax"] + "摄氏度"
 day_forecast_today_sunrise = today_data["sunrise"]
 day_forecast_today_sunset = today_data["sunset"]
 day_forecast_today_night = today_data["textNight"]
@@ -115,8 +115,8 @@ day_forecast_today_windScaleDay = today_data["windScaleDay"]
 # 明天
 tomorrow_data = day_forecast_json["daily"][1]
 day_forecast_tomorrow_weather = tomorrow_data["textDay"]
-day_forecast_tomorrow_temperature_min = tomorrow_data["tempMin"] + "℃"
-day_forecast_tomorrow_temperature_max = tomorrow_data["tempMax"] + "℃"
+day_forecast_tomorrow_temperature_min = tomorrow_data["tempMin"] + "摄氏度"
+day_forecast_tomorrow_temperature_max = tomorrow_data["tempMax"] + "摄氏度"
 day_forecast_tomorrow_sunrise = tomorrow_data["sunrise"]
 day_forecast_tomorrow_sunset = tomorrow_data["sunset"]
 day_forecast_tomorrow_night = tomorrow_data["textNight"]
@@ -186,16 +186,15 @@ if __name__ == '__main__':
     print("当前时间：", beijing_time, "推送：", strDay)
 
     data = {
-        "name": {"value": name},
         "today": {"value": today_date},
         "city": {"value": city},
         "weather": {"value": globals()[f'day_forecast_{strDay}_weather']},
         "now_temperature": {"value": now_temperature},
         "min_temperature": {"value": globals()[f'day_forecast_{strDay}_temperature_min']},
         "max_temperature": {"value": globals()[f'day_forecast_{strDay}_temperature_max']},
-        "love_date": {"value": get_count()},
-        "birthday": {"value": get_birthday()},
-        "diff_date1": {"value": days_until_spring_festival()},
+        "love_date": {"value": f"{get_count()}天"},
+        "birthday": {"value": f"{get_birthday()}天"},
+        "diff_date1": {"value": f"{days_until_spring_festival()}天"},
         "sunrise": {"value": globals()[f'day_forecast_{strDay}_sunrise']},
         "sunset": {"value": globals()[f'day_forecast_{strDay}_sunset']},
         "textNight": {"value": globals()[f'day_forecast_{strDay}_night']},
