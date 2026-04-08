@@ -5,7 +5,7 @@ on:
      # 早上 8 点 (UTC 时间 0 点)
     - cron: '0 0 * * *'
     # 晚上 10 点 (UTC 时间 14 点)
-    - cron: '30 8 * * *'
+    - cron: '00 9 * * *'
   workflow_dispatch:
 
 permissions:
@@ -43,7 +43,6 @@ jobs:
       TEMPLATE_ID_NIGHT: ${{ secrets.TEMPLATE_ID_NIGHT }}
       USER_IDS: ${{ secrets.USER_IDS }}
       START_DATE: ${{ secrets.START_DATE }}
-      NAME: ${{ secrets.NAME }}
       BIRTHDAY: ${{ secrets.BIRTHDAY }}
       CITY: ${{ secrets.CITY }}
       QWEATHER_HOST: ${{ secrets.QWEATHER_HOST }}
