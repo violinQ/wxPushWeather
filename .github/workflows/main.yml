@@ -5,7 +5,7 @@ on:
     # 早上 8 点 (UTC 时间 0 点)
     - cron: '0 0 * * *'
     # 晚上 24 点 (UTC 时间 16 点)
-    - cron: '00 16 * * *'
+    - cron: '59 15 * * *'
   workflow_dispatch:
 
 permissions:
