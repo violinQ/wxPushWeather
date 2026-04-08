@@ -87,7 +87,7 @@ def qweather_get(path, params):
 
 # ================== 获取城市ID ==================
 params = {"location": city}
-resp_json = qweather_get("/v2/city/lookup", params)
+resp_json = qweather_get("/geo/v2/city/lookup", params)
 city_id = resp_json["location"][0]["id"]
 
 params["location"] = city_id
