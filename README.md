@@ -70,7 +70,6 @@ https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
 
 模板内容-标题：宝贝，早上好啊☀️：
 ```copy
-💓可爱的：{{name.DATA}} 
 📅今天是：{{today.DATA}} 
 🌍城市：{{city.DATA}} 
 ☁️今日天气：{{weather.DATA}} 
@@ -78,8 +77,8 @@ https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
 🌕今日最低温度：{{min_temperature.DATA}}
 🌞今日最高温度：{{max_temperature.DATA}}  
 ❤️我们已经恋爱：{{love_date.DATA}}  
-🎂距离你这个小笨蛋的生日还有：{{birthday.DATA}}  
-🏮距离春节还有：{{diff_date1.DATA}}
+🎂距离你这个小可爱的生日还有：{{birthday.DATA}}  
+🧨距离春节还有：{{diff_date1.DATA}}
 🌄日出时间：{{sunrise.DATA}}
 🌄日落时间：{{sunset.DATA}}
 🌛夜间天气：{{textNight.DATA}}
@@ -92,7 +91,6 @@ https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
 
 模板内容-标题：宝贝，晚上好啊🌛：
 ```copy
-💓可爱的：{{name.DATA}} 
 📅今天是：{{today.DATA}} 
 🌍城市：{{city.DATA}} 
 ☁️明日天气：{{weather.DATA}} 
@@ -100,8 +98,8 @@ https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
 🌕明日最低温度：{{min_temperature.DATA}}
 🌞明日最高温度：{{max_temperature.DATA}}  
 ❤️我们已经恋爱：{{love_date.DATA}}  
-🎂距离你这个小笨蛋的生日还有：{{birthday.DATA}}  
-🏮距离春节还有：{{diff_date1.DATA}}
+🎂距离你这个小可爱的生日还有：{{birthday.DATA}}  
+🧨距离春节还有：{{diff_date1.DATA}}
 🌄日出时间：{{sunrise.DATA}}
 🌄日落时间：{{sunset.DATA}}
 🌛夜间天气：{{textNight.DATA}}
