@@ -39,14 +39,24 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      # ⭐ 核心：稳定的 MODE 判断
       - name: Set MODE
         run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Schedule: ${{ github.event.schedule }}"
+
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "MODE=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
-          elif [ "${{ github.event.schedule }}" = "0 16 * * *" ]; then
-            echo "MODE=night" >> $GITHUB_ENV
           else
-            echo "MODE=day" >> $GITHUB_ENV
+            if [ "${{ github.event.schedule }}" = "0 16 * * *" ]; then
+              echo "MODE=night" >> $GITHUB_ENV
+            else
+              echo "MODE=day" >> $GITHUB_ENV
+            fi
+          fi
+
+      - name: Debug MODE
+        run: echo "MODE is $MODE"
 
       - name: Run script
         run: python main.py
