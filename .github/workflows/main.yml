@@ -4,8 +4,8 @@ on:
   schedule:
     # 北京时间 08:00（UTC 00:00）
     - cron: '0 0 * * *'
-    # 北京时间 00:00（UTC 16:00）
-    - cron: '0 16 * * *'
+    # 北京时间 23:45（UTC 15:45）
+    - cron: '45 15 * * *'
   workflow_dispatch:
     inputs:
       mode:
