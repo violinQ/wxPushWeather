@@ -2,21 +2,27 @@ name: wx天气预报推送
 
 on:
   schedule:
-    # 北京时间 08:00（UTC 00:00）
+    # 北京时间 08:00
     - cron: '0 0 * * *'
-    # 北京时间 23:45（UTC 15:45）
+    # 北京时间 23:45
     - cron: '45 15 * * *'
+
   workflow_dispatch:
     inputs:
       mode:
         description: "选择推送模式"
-        required: false   # ⭐ 改为非必填
+        required: false
         default: ""
         type: choice
         options:
           - ""
           - day
           - night
+
+      user_ids:
+        description: "指定推送用户（分号分隔，不填则使用默认）"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -40,14 +46,22 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # ⭐ 只在手动触发时设置 MODE
+      # ⭐ 手动触发才设置 MODE
       - name: Set MODE (manual only)
         if: github.event_name == 'workflow_dispatch'
         run: |
           echo "MODE=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
 
-      - name: Debug MODE
-        run: echo "MODE is $MODE"
+      # ⭐ 手动触发可覆盖 USER_IDS
+      - name: Override USER_IDS (manual only)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.user_ids != ''
+        run: |
+          echo "USER_IDS=${{ github.event.inputs.user_ids }}" >> $GITHUB_ENV
+
+      - name: Debug
+        run: |
+          echo "MODE is $MODE"
+          echo "USER_IDS is $USER_IDS"
 
       - name: Run script
         run: python main.py
