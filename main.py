@@ -125,7 +125,8 @@ def days_until_spring_festival(year=None):
 
 
 def get_count():
-    delta = today - datetime.strptime(start_date, "%Y-%m-%d").replace(tzinfo=)
+    start = datetime.strptime(start_date, "%Y-%m-%d").replace(tzinfo=CN_TZ)
+    delta = today - start
     return delta.days + 1
 
 
