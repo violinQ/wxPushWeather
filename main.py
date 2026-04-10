@@ -17,8 +17,8 @@ template_id_day = os.environ["TEMPLATE_ID_DAY"]
 template_id_night = os.environ["TEMPLATE_ID_NIGHT"]
 city = os.environ['CITY']
 
-# ⭐ 手动模式（可为空）
-mode = os.environ.get("MODE", None)
+# ⭐ 默认 auto
+mode = os.environ.get("MODE", "auto")
 
 # ====== 和风天气 JWT ======
 qweather_host = os.environ["QWEATHER_HOST"]
@@ -151,21 +151,26 @@ if __name__ == '__main__':
 
     note1, note2, note3, note4, note5 = get_words()
 
-    # ⭐ 日出日落判断
+    # ⭐ 日出日落
     sunrise_time = datetime.strptime(today_pack["sunrise"], "%H:%M").time()
     sunset_time = datetime.strptime(today_pack["sunset"], "%H:%M").time()
     now_time = datetime.now().time()
 
-    # ⭐ 自动 / 手动模式
-    if mode not in ["day", "night"]:
+    # ⭐ 模式判断（显式状态机）
+    if mode == "day":
+        mode_auto = "day"
+    elif mode == "night":
+        mode_auto = "night"
+    else:
+        # auto
         if sunrise_time <= now_time <= sunset_time:
             mode_auto = "day"
         else:
             mode_auto = "night"
-    else:
-        mode_auto = mode
 
-    # ⭐ 选择数据源
+    print(f"MODE输入: {mode} -> 实际模式: {mode_auto}")
+
+    # ⭐ 数据选择
     if mode_auto == "night":
         data_src = tomorrow_pack
         template_id = template_id_night
@@ -175,7 +180,7 @@ if __name__ == '__main__':
         template_id = template_id_day
         label = "今天"
 
-    print(f"模式: {mode_auto} -> 推送: {label}")
+    print(f"推送: {label}")
 
     data = {
         "today": {"value": today_date},
