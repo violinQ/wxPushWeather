@@ -12,10 +12,10 @@ on:
       mode:
         description: "选择推送模式"
         required: false
-        default: ""
+        default: "auto"
         type: choice
         options:
-          - ""
+          - auto
           - day
           - night
 
@@ -52,7 +52,7 @@ jobs:
         run: |
           echo "MODE=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
 
-      # ⭐ 手动触发可覆盖 USER_IDS
+      # ⭐ 手动触发覆盖 USER_IDS（测试用）
       - name: Override USER_IDS (manual only)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.user_ids != ''
         run: |
