@@ -10,10 +10,11 @@ on:
     inputs:
       mode:
         description: "选择推送模式"
-        required: true
-        default: "day"
+        required: false   # ⭐ 改为非必填
+        default: ""
         type: choice
         options:
+          - ""
           - day
           - night
 
@@ -39,21 +40,11 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # ⭐ 核心：稳定的 MODE 判断
-      - name: Set MODE
+      # ⭐ 只在手动触发时设置 MODE
+      - name: Set MODE (manual only)
+        if: github.event_name == 'workflow_dispatch'
         run: |
-          echo "Event: ${{ github.event_name }}"
-          echo "Schedule: ${{ github.event.schedule }}"
-
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "MODE=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
-          else
-            if [ "${{ github.event.schedule }}" = "0 16 * * *" ]; then
-              echo "MODE=night" >> $GITHUB_ENV
-            else
-              echo "MODE=day" >> $GITHUB_ENV
-            fi
-          fi
+          echo "MODE=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
 
       - name: Debug MODE
         run: echo "MODE is $MODE"
