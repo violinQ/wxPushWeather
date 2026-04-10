@@ -1,7 +1,7 @@
 import os
 import requests
 import jwt
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 
 from lunardate import LunarDate
 from wechatpy import WeChatClient
@@ -17,7 +17,7 @@ template_id_day = os.environ["TEMPLATE_ID_DAY"]
 template_id_night = os.environ["TEMPLATE_ID_NIGHT"]
 city = os.environ['CITY']
 
-# ⭐ MODE 由 workflow 传入，保留手动模式
+# ⭐ 手动模式（可为空）
 mode = os.environ.get("MODE", None)
 
 # ====== 和风天气 JWT ======
@@ -151,20 +151,21 @@ if __name__ == '__main__':
 
     note1, note2, note3, note4, note5 = get_words()
 
-    # 解析日出日落时间
+    # ⭐ 日出日落判断
     sunrise_time = datetime.strptime(today_pack["sunrise"], "%H:%M").time()
     sunset_time = datetime.strptime(today_pack["sunset"], "%H:%M").time()
     now_time = datetime.now().time()
 
-    # 自动判断模式，MODE 有值则手动覆盖
+    # ⭐ 自动 / 手动模式
     if mode not in ["day", "night"]:
         if sunrise_time <= now_time <= sunset_time:
             mode_auto = "day"
         else:
             mode_auto = "night"
     else:
-        mode_auto = mode  # 手动模式覆盖
+        mode_auto = mode
 
+    # ⭐ 选择数据源
     if mode_auto == "night":
         data_src = tomorrow_pack
         template_id = template_id_night
