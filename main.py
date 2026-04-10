@@ -1,11 +1,12 @@
 import os
 import requests
 import jwt
-from datetime import date, datetime
+from datetime import date, datetime, timezone, timedelta
 
 from lunardate import LunarDate
 from wechatpy import WeChatClient
 from wechatpy.client.api import WeChatMessage
+
 
 # ================== 环境变量 ==================
 start_date = os.environ['START_DATE']
@@ -17,8 +18,11 @@ template_id_day = os.environ["TEMPLATE_ID_DAY"]
 template_id_night = os.environ["TEMPLATE_ID_NIGHT"]
 city = os.environ['CITY']
 
-# ⭐ 默认 auto
+# auto / day / night
 mode = os.environ.get("MODE", "auto")
+
+# ================== 中国时区 ==================
+CN_TZ = timezone(timedelta(hours=8))
 
 # ====== 和风天气 JWT ======
 qweather_host = os.environ["QWEATHER_HOST"]
@@ -26,7 +30,7 @@ qweather_kid = os.environ["QWEATHER_KID"]
 qweather_private_key = os.environ["QWEATHER_PRIVATE_KEY"]
 qweather_project_id = os.environ["QWEATHER_PROJECT_ID"]
 
-today = datetime.now()
+today = datetime.now(CN_TZ)
 today_date = today.strftime("%Y年%m月%d日")
 
 _jwt_token = None
@@ -74,16 +78,16 @@ def qweather_get(path, params):
     return resp.json()
 
 
-# ================== 获取城市ID ==================
+# ================== 城市ID ==================
 params = {"location": city}
 resp_json = qweather_get("/geo/v2/city/lookup", params)
 city_id = resp_json["location"][0]["id"]
 params["location"] = city_id
 
+
 # ================== 天气 ==================
 realtime_json = qweather_get("/v7/weather/now", params)
-realtime = realtime_json["now"]
-now_temperature = realtime["temp"] + "摄氏度"
+now_temperature = realtime_json["now"]["temp"] + "摄氏度"
 
 day_forecast_json = qweather_get("/v7/weather/3d", params)
 today_data = day_forecast_json["daily"][0]
@@ -121,16 +125,19 @@ def days_until_spring_festival(year=None):
 
 
 def get_count():
-    delta = today - datetime.strptime(start_date, "%Y-%m-%d")
+    delta = today - datetime.strptime(start_date, "%Y-%m-%d").replace(tzinfo=)
     return delta.days + 1
 
 
 def get_birthday():
     next_birthday = datetime.strptime(
-        str(date.today().year) + "-" + birthday, "%Y-%m-%d"
-    )
-    if next_birthday < datetime.now():
+        str(date.today().year) + "-" + birthday,
+        "%Y-%m-%d"
+    ).replace(tzinfo=CN_TZ)
+
+    if next_birthday < today:
         next_birthday = next_birthday.replace(year=next_birthday.year + 1)
+
     return (next_birthday - today).days
 
 
@@ -151,26 +158,27 @@ if __name__ == '__main__':
 
     note1, note2, note3, note4, note5 = get_words()
 
-    # ⭐ 日出日落
+    # ================== 时区安全时间 ==================
+    now_time = datetime.now(CN_TZ).time()
+
     sunrise_time = datetime.strptime(today_pack["sunrise"], "%H:%M").time()
     sunset_time = datetime.strptime(today_pack["sunset"], "%H:%M").time()
-    now_time = datetime.now().time()
 
-    # ⭐ 模式判断（显式状态机）
+    # ================== 模式判断 ==================
     if mode == "day":
         mode_auto = "day"
     elif mode == "night":
         mode_auto = "night"
     else:
-        # auto
+        # auto mode
         if sunrise_time <= now_time <= sunset_time:
             mode_auto = "day"
         else:
             mode_auto = "night"
 
-    print(f"MODE输入: {mode} -> 实际模式: {mode_auto}")
+    print(f"[MODE] input={mode} -> resolved={mode_auto}")
 
-    # ⭐ 数据选择
+    # ================== 数据选择 ==================
     if mode_auto == "night":
         data_src = tomorrow_pack
         template_id = template_id_night
@@ -180,8 +188,9 @@ if __name__ == '__main__':
         template_id = template_id_day
         label = "今天"
 
-    print(f"推送: {label}")
+    print(f"[SEND] {label}")
 
+    # ================== 模板数据 ==================
     data = {
         "today": {"value": today_date},
         "city": {"value": city},
@@ -205,6 +214,7 @@ if __name__ == '__main__':
         "note5": {"value": note5}
     }
 
+    # ================== 发送 ==================
     for u in user_ids.split(";"):
         res = wm.send_template(u, template_id, data)
         print(res)
